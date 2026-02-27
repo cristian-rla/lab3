@@ -1,4 +1,5 @@
 import {useRef, useState, type RefObject} from 'react';
+import './Form.css';
 
 /*
 Matricula
@@ -40,16 +41,8 @@ export const Form = () => {
         carrera: ''
     });
 
-    const [finalForm, setFinalForm] = useState<FormData>({
-        matricula: '',
-        nombre: '',
-        apellidos: '',
-        edad: 0,
-        universidad: '',
-        carrera: ''
-    });
+    const [finalForm, setFinalForm] = useState<FormData | null>(null);
     
-
     const [error, setError] = useState<string>('');
 
     const inputRefs: InputRefs = {
@@ -61,7 +54,8 @@ export const Form = () => {
         carreraRef: useRef<HTMLInputElement>(null)
     };
 
-    const onSubmit = (event: any) => {
+    const onSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+        e.preventDefault();
         const {matricula, nombre, apellidos, edad, universidad, carrera} = form;
         if (matricula.trim() === ''){
             inputRefs.matriculaRef?.current?.focus();
@@ -103,7 +97,7 @@ export const Form = () => {
 
     };
 
-    const onChange = (event: any) => {
+    const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
         setForm({
             ...form,
@@ -113,19 +107,20 @@ export const Form = () => {
 
     return (
         <>
-        <form onSubmit={onSubmit}>
-            <input type = 'text' ref = {inputRefs.matriculaRef} name = 'matricula' value = {form.matricula} onChange = {onChange} />
-            <input type = 'text' ref = {inputRefs.nombreRef} name = 'nombre' value = {form.nombre} onChange = {onChange} />
-            <input type = 'text' ref = {inputRefs.apellidosRef} name = 'apellidos' value = {form.apellidos} onChange = {onChange} />
-            <input type = 'number' ref = {inputRefs.edadRef} name = 'edad' value = {form.edad} onChange = {onChange} />
-            <input type = 'text' ref = {inputRefs.universidadRef} name = 'universidad' value = {form.universidad} onChange = {onChange} />
-            <input type = 'text' ref = {inputRefs.carreraRef} name = 'carrera' value = {form.carrera} onChange = {onChange} />
+        <form className="form" onSubmit={onSubmit}>
+            <input type = 'text' ref = {inputRefs.matriculaRef} name = 'matricula' value = {form.matricula} onChange = {onChange} placeholder='matricula'/>
+            <input type = 'text' ref = {inputRefs.nombreRef} name = 'nombre' value = {form.nombre} onChange = {onChange} placeholder='nombre'/>
+            <input type = 'text' ref = {inputRefs.apellidosRef} name = 'apellidos' value = {form.apellidos} onChange = {onChange} placeholder='apellidos'/>
+            <input type = 'number' ref = {inputRefs.edadRef} name = 'edad' value = {form.edad} onChange = {onChange} placeholder='edad'/>
+            <input type = 'text' ref = {inputRefs.universidadRef} name = 'universidad' value = {form.universidad} onChange = {onChange} placeholder='universidad'/>
+            <input type = 'text' ref = {inputRefs.carreraRef} name = 'carrera' value = {form.carrera} onChange = {onChange} placeholder='carrera'/>
+            <button type = 'submit'>Registrarse</button>
+
         </form>
         {error && <p style={{color: 'red'}}>{error}</p>}
 
-        <button onClick = {onSubmit}>Send forms</button>
 
-        {finalForm.matricula ? (
+        {finalForm && (
             <div>
                 <h2>Formulario Final</h2>
                 <p>Matrícula: {finalForm.matricula}</p>
@@ -135,7 +130,7 @@ export const Form = () => {
                 <p>Universidad: {finalForm.universidad}</p>
                 <p>Carrera: {finalForm.carrera}</p>
             </div>
-        ) : null}
+        )}
         </>
     );
 
